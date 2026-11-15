@@ -1,50 +1,46 @@
+
 from fastmcp import FastMCP
 import random
 import json
 
-# Create the FastMCP server instance
+# Create FastMCP server
 mcp = FastMCP("Simple Calculator Server")
 
-# Tool: Add two numbers
-@mcp.tool
+
+# Tool 1: Add two numbers
+@mcp.tool()
 def add(a: int, b: int) -> int:
-    """Add two numbers together.
-
-    Args:
-        a: First number
-        b: Second number
-
-    Returns:
-        The sum of a and b
-    """
+    """Add two numbers together."""
     return a + b
 
-# Tool: Generate a random number
+
+# Tool 2: Generate random number
 @mcp.tool()
 def random_number(min_val: int = 1, max_val: int = 100) -> int:
-    """Generate a random number within a range.
+    """Generate a random number within a range."""
 
-    Args:
-        min_val: Minimum value (default: 1)
-        max_val: Maximum value (default: 100)
+    if min_val > max_val:
+        raise ValueError("Minimum value cannot exceed maximum value")
 
-    Returns:
-        A random integer between min_val and max_val
-    """
     return random.randint(min_val, max_val)
+
 
 # Resource: Server information
 @mcp.resource("info://server")
 def server_info() -> str:
     """Get information about this server."""
+
     info = {
-    "name": "Simple Calculator Server",
-    "version": "1.0.0",
-    "description": "A basic MCP server with math tools",
-    "tools": ["add", "random_number"],
-    "author": "Your Name"
+        "name": "Simple Calculator Server",
+        "version": "1.0.0",
+        "description": "A basic MCP server with math tools",
+        "tools": ["add", "random_number"],
+        "author": "Mohit Goyal"
     }
+
     return json.dumps(info, indent=2)
 
+
+# Run server
 if __name__ == "__main__":
     mcp.run(transport="http", host="0.0.0.0", port=8000)
